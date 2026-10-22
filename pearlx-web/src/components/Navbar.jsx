@@ -48,7 +48,7 @@ export default function Navbar() {
         </div>
 
         {/* Desktop CTA */}
-        <a href="#contact" className={`hidden h-8 lg:inline-flex ${projectButton}`}>
+        <a href="#contact" className={`hidden h-10 lg:inline-flex ${projectButton}`}>
           Start a Project
           <ArrowUpRight size={16} />
         </a>
