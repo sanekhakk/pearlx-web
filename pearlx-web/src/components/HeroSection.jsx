@@ -87,7 +87,7 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative isolate overflow-hidden bg-pearl-bg px-5 pb-16 pt-28 text-pearl-white sm:px-8 sm:pb-24 sm:pt-30 lg:px-12 lg:pb-28 lg:pt-36"
+      className="relative isolate overflow-hidden bg-pearl-bg px-5 pb-16 pt-15 text-pearl-white sm:px-8 sm:pb-24  lg:px-12 lg:h-screen lg:pt-36"
     >
       {/* Subtle brand-colour atmosphere behind the content */}
       <div
