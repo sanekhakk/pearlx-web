@@ -109,13 +109,15 @@ export default function HeroSection() {
         >
           
 
+          
           <h1 className="hero-heading max-w-2xl font-heading text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
             Big website dreams.
             <br />
-            <span className="bg-gradient-to-r from-pearl-cyan via-pearl-blue to-pearl-magenta bg-clip-text text-transparent">
+            <span className="hero-gradient-text bg-gradient-to-r from-pearl-cyan via-pearl-blue to-pearl-magenta bg-clip-text text-transparent">
               Smaller monthly payments.
             </span>
           </h1>
+
 
           {/* Image appears immediately below heading on mobile */}
           <div className="my-6 lg:hidden">
