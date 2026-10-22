@@ -1,6 +1,11 @@
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+} from "motion/react";
 import { ArrowDown, ArrowUpRight, Check } from "lucide-react";
 
 const stages = [
@@ -50,6 +55,7 @@ function WireframePreview() {
             <div className="mt-2 h-2 w-3/4 bg-[#222542]/10" />
             <div className="mt-5 h-7 w-20 bg-[#222542]/20" />
           </div>
+
           <div className="flex items-end bg-[#E1E4F2] p-2">
             <div className="h-20 w-full border border-[#222542]/15 sm:h-28" />
           </div>
@@ -75,7 +81,7 @@ function DesignPreview() {
       <div className="w-full max-w-md rotate-1 bg-[#EAE4FC] p-3 shadow-2xl sm:p-5">
         <div className="flex items-center justify-between border-b border-pearl-navy/15 pb-3">
           <span className="font-heading text-xs font-bold text-pearl-navy">
-            form & field.
+            form &amp; field.
           </span>
           <span className="text-[9px] text-pearl-navy/60">
             Made with intention
@@ -87,11 +93,13 @@ function DesignPreview() {
             <p className="text-[8px] font-semibold tracking-[0.18em] text-pearl-violet sm:text-[10px]">
               A NEW PERSPECTIVE
             </p>
+
             <h3 className="mt-3 font-heading text-xl font-semibold leading-tight text-pearl-navy sm:text-3xl">
               A little
               <br />
               more you.
             </h3>
+
             <div className="mt-4 inline-flex items-center gap-1 bg-pearl-violet px-3 py-2 text-[9px] text-white">
               Explore the story <ArrowUpRight size={11} />
             </div>
@@ -125,7 +133,7 @@ function FinishedPreview() {
       <div className="w-full max-w-md -rotate-1 border border-white/70 bg-white p-3 shadow-2xl sm:p-5">
         <div className="flex items-center justify-between border-b border-gray-100 pb-3">
           <span className="font-heading text-xs font-bold text-pearl-navy">
-            form & field.
+            form &amp; field.
           </span>
           <span className="flex items-center gap-1 text-[9px] text-green-700">
             <Check size={12} />
@@ -138,14 +146,17 @@ function FinishedPreview() {
             <p className="text-[8px] font-semibold tracking-[0.18em] text-pearl-blue sm:text-[10px]">
               MADE FOR EVERYDAY
             </p>
+
             <h3 className="mt-3 font-heading text-xl font-semibold leading-tight text-pearl-navy sm:text-3xl">
               Your next
               <br />
               chapter.
             </h3>
+
             <p className="mt-3 text-[9px] leading-4 text-pearl-navy/60 sm:text-xs sm:leading-5">
               A thoughtful experience from the first click.
             </p>
+
             <div className="mt-4 inline-flex items-center gap-1 bg-pearl-blue px-3 py-2 text-[9px] text-white">
               Discover more <ArrowUpRight size={11} />
             </div>
@@ -183,38 +194,49 @@ export default function StorySection() {
     offset: ["start start", "end end"],
   });
 
+  // Spring smoothing reduces abrupt changes in the scroll-linked animation.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    mass: 0.2,
+    restDelta: 0.001,
+  });
+
+  // First preview: wireframe.
   const wireframeOpacity = useTransform(
-    scrollYProgress,
+    smoothProgress,
     [0, 0.08, 0.28, 0.4],
     [1, 1, 0, 0]
   );
 
-  const designOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.28, 0.4, 0.62, 0.74],
-    [0, 0, 1, 1, 0]
-  );
-
-  const finishedOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.62, 0.76, 1],
-    [0, 0, 1, 1]
-  );
-
   const wireframeScale = useTransform(
-    scrollYProgress,
+    smoothProgress,
     [0, 0.35],
     [1, 0.95]
   );
 
+  // Second preview: visual design.
+  const designOpacity = useTransform(
+    smoothProgress,
+    [0, 0.28, 0.4, 0.62, 0.74],
+    [0, 0, 1, 1, 0]
+  );
+
   const designScale = useTransform(
-    scrollYProgress,
+    smoothProgress,
     [0.3, 0.5, 0.72],
     [0.95, 1, 0.97]
   );
 
+  // Third preview: finished website.
+  const finishedOpacity = useTransform(
+    smoothProgress,
+    [0, 0.62, 0.76, 1],
+    [0, 0, 1, 1]
+  );
+
   const finishedScale = useTransform(
-    scrollYProgress,
+    smoothProgress,
     [0.68, 0.88],
     [0.95, 1]
   );
@@ -225,6 +247,7 @@ export default function StorySection() {
       className="overflow-clip bg-pearl-bg px-5 py-20 text-pearl-white sm:px-8 sm:py-28 lg:px-12 lg:py-32"
     >
       <div className="mx-auto max-w-7xl">
+        {/* Section heading */}
         <div className="mb-12 flex flex-col justify-between gap-5 sm:mb-16 md:flex-row md:items-end">
           <div>
             <p className="text-xs font-semibold tracking-[0.2em] text-pearl-cyan">
@@ -246,37 +269,39 @@ export default function StorySection() {
           </p>
         </div>
 
+        {/* Sticky visual and scroll-driven story */}
         <div
           ref={storyRef}
           className="grid gap-8 md:grid-cols-2 md:gap-12 lg:gap-20"
         >
-          {/* Sticky visual on mobile and desktop */}
-          <div className="sticky top-16 z-20 h-[230px] self-start sm:top-20 sm:h-[330px] md:top-24 md:h-[min(68vh,620px)]">
-            <div className="relative h-full overflow-hidden border border-pearl-border bg-pearl-surface">
-              <div className="absolute left-4 top-4 z-10 flex items-center gap-2 sm:left-6 sm:top-6">
-                <span className="h-2 w-2 rounded-full bg-pearl-cyan shadow-[0_0_12px_#16D9F2]" />
-                <span className="text-[9px] font-semibold tracking-[0.15em] text-white/60 sm:text-[10px]">
-                  THE MAKING OF A WEBSITE
-                </span>
-              </div>
-
+          <div className="sticky top-24 z-20 h-[230px] self-start sm:top-28 sm:h-[330px] md:top-28 md:h-[min(68vh,620px)]">         
+           <div className="relative h-full overflow-hidden border border-pearl-border bg-pearl-surface">
               <motion.div
-                style={{ opacity: wireframeOpacity, scale: wireframeScale }}
-                className="absolute inset-0"
+                style={{
+                  opacity: wireframeOpacity,
+                  scale: wireframeScale,
+                }}
+                className="absolute inset-0 will-change-transform"
               >
                 <WireframePreview />
               </motion.div>
 
               <motion.div
-                style={{ opacity: designOpacity, scale: designScale }}
-                className="absolute inset-0"
+                style={{
+                  opacity: designOpacity,
+                  scale: designScale,
+                }}
+                className="absolute inset-0 will-change-transform"
               >
                 <DesignPreview />
               </motion.div>
 
               <motion.div
-                style={{ opacity: finishedOpacity, scale: finishedScale }}
-                className="absolute inset-0"
+                style={{
+                  opacity: finishedOpacity,
+                  scale: finishedScale,
+                }}
+                className="absolute inset-0 will-change-transform"
               >
                 <FinishedPreview />
               </motion.div>
@@ -289,8 +314,8 @@ export default function StorySection() {
           </div>
 
           {/* Narrative stages */}
-          <div>
-            {stages.map((stage, index) => (
+          <div className="min-w-0">
+            {stages.map((stage) => (
               <article
                 key={stage.number}
                 className="flex min-h-[62vh] flex-col justify-center border-b border-pearl-border py-10 md:min-h-[75vh] md:py-16"
@@ -299,7 +324,9 @@ export default function StorySection() {
                   <span className="font-heading text-sm font-semibold text-pearl-cyan">
                     {stage.number}
                   </span>
+
                   <span className="h-px w-10 bg-gradient-to-r from-pearl-blue to-pearl-magenta" />
+
                   <span className="text-[10px] font-semibold tracking-[0.18em] text-pearl-muted">
                     {stage.label}
                   </span>
@@ -324,6 +351,7 @@ export default function StorySection() {
           </div>
         </div>
 
+        {/* Bottom CTA */}
         <div className="mt-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <p className="max-w-lg text-xs leading-6 text-pearl-muted sm:text-sm">
             Your business is unique. Your website should be, too.
@@ -331,7 +359,7 @@ export default function StorySection() {
 
           <a
             href="#process"
-            className="inline-flex items-center gap-2 border-b border-pearl-violet pb-1 text-sm font-semibold text-pearl-cyan transition hover:border-pearl-magenta hover:text-pearl-magenta"
+            className="inline-flex items-center gap-2 border-b border-pearl-violet pb-1 text-sm font-semibold text-pearl-cyan transition-colors hover:border-pearl-magenta hover:text-pearl-magenta"
           >
             See how we work
             <ArrowUpRight size={16} />

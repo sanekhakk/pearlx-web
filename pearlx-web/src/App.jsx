@@ -15,10 +15,11 @@ export default function App() {
 
       <main>
         <HeroSection />
-        <StorySection />
-        <ServicesSection />
-        <ProcessSection />
         <PaymentSection />
+        <ServicesSection />
+        <StorySection />
+        {/* <ProcessSection /> */}
+        
         <ContactSection />
       </main>
 
